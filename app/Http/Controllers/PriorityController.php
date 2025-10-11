@@ -13,56 +13,47 @@ use Illuminate\Support\Facades\Auth;
 class PriorityController extends Controller
 {
     public function priority_update(Request $request): JsonResponse
-    {
-        $request->validate([
-            'question_id' => 'required|exists:stored_questions,id',
-            'priority_num' => 'required|integer|min:0|max:3',
-        ]);
+{
+    // ... バリデーション ...
+    
+    // 💡 デバッグログ 1: 取得したIDとユーザーを確認
+    \Log::info('Priority Update Request:', [
+        'user_id' => auth()->id(), 
+        'question_id' => $request->input('question_id'),
+        'priority_num' => $request->input('priority_num')
+    ]);
 
-        $question = Question::findOrFail($request->input('question_id'));
+    $storedQuestion = StoredQuestion::findOrFail($request->input('question_id'));
+    $user = auth()->user();
 
-        // ログインユーザー取得
-        $user = auth()->user();
+    // 💡 デバッグログ 2: リレーションの情報を確認
+    // $user->triedStoredQuestions() のリレーションが User モデルで正しく定義されているか
+    // 中間テーブルに priority カラムがあるか
+    
+     
+    // 💡 解決コード: 必須カラム question_id と answer_count に値を渡す
+    $updated =
+    $user->triedStoredQuestions()
+    ->updateExistingPivot($storedQuestion->id, [
+        'priority' => $request->input('priority_num'),
+        // 'question_id' や 'answer_count' を渡す必要はもうありません！
+]);
+    
+    // 💡 デバッグログ 3: 更新が成功したかを確認 (1なら成功)
+    \Log::info('Pivot Update Result:', ['updated_rows' => $updated]);
 
-        // 該当する質問の pivot テーブルのデータを更新
-        $user->triedStoredQuestions()->updateExistingPivot($question->id, [
-            'priority' => $request->input('priority_num')
-        ]);
-
-        return response()->json([
-            'message' => '優先度が更新されました！',
-            'question_id' => $question->id,
-            'priority_num' => $request->input('priority_num')
-        ]);
+    if ($updated===0) {
+        // 既存レコードが存在しない場合は 0 が返る。
+        // この時点で新規作成の機能は使わず、エラーを返すか、
+        // 🚨 意図的に新規作成を許可するなら、ここで attach() を使う。
+        // ただし、今回は「更新」機能と分離するのがベスト。
+        return response()->json(['message' => '優先度を更新できませんでした（レコードなし）。', 'updated' => 0], 404);
     }
+    
+    return response()->json([
+        'message' => '優先度が更新されました！',
+        'question_id' => $storedQuestion->id,
+        'priority_num' => $request->input('priority_num')
+    ]);
 }
-
-//         $priority_num = $request->input('priority_num');
-        
-        
-//         // DBの更新などを行う（例）
-//         // Option::update(['selected_option' => $option]);
-// return response()->json(['message' => 'オプションが更新されました']);
-    
-//     // \Log::info('Request Data:', $request->all());
-    
-//     $storedQuestion = StoredQuestion::find($request->stored_question_id);
-
-//     // 新しい回答データを作成
-//     $question_answer = Question::create([
-//         'stored_question_id' => $storedQuestion->id,  
-//         'tried_stored_question_id' => $request->tried_stored_question_id,
-//         'user_answer' => $request->user_answer,
-//         'user_id' => auth()->id(), // 現在ログインしているユーザーの ID を保存
-//     ]);
-    
-
-//     // ログインユーザーを取得
-//     $user = auth()->user();
-
-//     // すでにこの質問に対する回答があれば、answer_count を更新
-//     $pivot = $user->triedStoredQuestions()->where('stored_question_id', $question_answer->stored_question_id)->first();
-
-//     return redirect(route('questions.index'));
-// }
-// }
+}
