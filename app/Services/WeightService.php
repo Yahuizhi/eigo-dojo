@@ -8,6 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class WeightService
 {
+    public function getUserPriority(int $storedQuestionId): int
+    {
+        $user = Auth::user();
+
+        // 1. ピボットレコードを取得
+        $pivot = $user->triedStoredQuestions()
+        ->where('stored_question_id', $storedQuestionId)
+        ->first();
+
+        // 2. レコードがあればその priority を返し、なければデフォルトの 1 を返す
+        if ($pivot) {
+            // $pivot はリレーションの結果なので、ピボットデータは $pivot->pivot に格納される
+            return $pivot->pivot->priority ?? 1; // DB値がNULLの場合のガード
+        }
+
+        // 3. レコードが存在しない場合は、初期値 1 を返す
+        return 1;
+    }
+
     /**
      * ユーザーの回答履歴を考慮したランダムな質問を取得する
      */

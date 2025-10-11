@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('stored_question_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');            
             $table->integer('answer_count')->default(0);
-            $table->integer('priority')->default(0);
+            $table->integer('priority')->default(1);
             $table->timestamps();
         });
     }

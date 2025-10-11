@@ -27,7 +27,11 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         // 2. StoredQuestionをシード
-        $this->call(StoredQuestionSeeder::class);
+        $this->call([
+            StoredQuestionSeeder::class,
+            TestUserSeeder::class,
+            UserQuestionDataSeeder::class,
+        ]);
 
         
     }

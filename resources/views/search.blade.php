@@ -1,7 +1,7 @@
 <x-app-layout>
     
 
-<div class="flex flex-col md:flex-row gap-6">
+<div class="flex flex-col md:flex-row gap-6 px-2 md:px-0">
     <!-- サイドバー -->
     <div class="w-full md:w-1/4">
         <!-- 検索フォーム -->
@@ -10,7 +10,7 @@
     <!-- キーワード検索 -->
     <div class="mb-4">
         <label for="keyword" class="block text-sm font-medium">キーワード</label>
-        <input type="text" name="keyword" id="keyword" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200" placeholder="メーカー・商品名" value="{{ Request::get('keyword') }}">
+        <input type="text" name="keyword" id="keyword" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200" placeholder="質問名" value="{{ Request::get('keyword') }}">
     </div>
     <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md shadow hover:bg-indigo-700">検索</button>
     </form>
@@ -23,14 +23,14 @@
         <!-- テーブルの横スクロール対応 -->
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
             <!-- 商品リストテーブル -->
-            <table class="table-auto w-full border-collapse border border-gray-300">
+            <table class="table-fixed md:table-auto w-full border-collapse border border-gray-300">
                 <!-- テーブルヘッダー -->
                 <thead class="bg-gray-200">
                     <tr>
                         <th class="px-4 py-2">
                             質問
                         </th>
-                        <th class="px-4 py-2">
+                        <th class="px-4 py-2 hover:bg-gray-300 active:bg-gray-500 focus:border-gray-700">
                 <a href="{{ route('search', [
                 'keyword' => request()->get('keyword'),
                 'sort' => 'created_at', 'direction' => request()->get('direction','asc') === 'asc' ? 'desc' : 'asc']) }}">
@@ -43,9 +43,9 @@
                         @endif
                     @endif
                 </a>
-            </th><th class="px-4 py-2">
+            </th><th class="px-4 py-2 hover:bg-gray-300 active:bg-gray-500 focus:border-gray-700">
                 <a href="{{ route('search', ['keyword' => request()->get('keyword'),'sort' => 'updated_at', 'direction' => request()->get('direction','asc') === 'asc' ? 'desc' : 'asc']) }}">
-                    最近の稽古日
+                    最新の稽古日
                     @if (request()->sort == 'updated_at')
                         @if (request()->direction == 'asc')
                             <span>&#8595;</span> <!-- 下矢印 -->
@@ -54,7 +54,7 @@
                         @endif
                     @endif
                 </a>
-            </th><th class="px-4 py-2">
+            </th><th class="px-4 py-2 hover:bg-gray-300 active:bg-gray-500 focus:border-gray-700">
                 <a href="{{ route('search', ['keyword' => request()->get('keyword'), 'sort' => 'answer_count', 'direction' => request()->get('direction','asc') === 'asc' ? 'desc' : 'asc']) }}">
                     けいこ回数
                     @if (request()->sort == 'answer_count')
@@ -66,9 +66,9 @@
                     @endif
                 </a>
             </th>
-                        <th class="px-4 py-2">
+                        <th class="px-4 py-2 hover:bg-gray-300 active:bg-gray-500 focus:border-gray-700">
                 <a href="{{ route('search', ['keyword' => request()->get('keyword'), 'sort' => 'priority', 'direction' => request()->get('direction','asc') === 'asc' ? 'desc' : 'asc']) }}">
-                    優先度
+                    質問出現頻度
                     @if (request()->sort == 'priority')
                         @if (request()->direction == 'asc')
                             <span>&#8595;</span> <!-- 下矢印 -->
@@ -96,29 +96,26 @@
         </td>
         <td class="border px-4 py-2">{{ $pivot->answer_count ?? 0 }}</td>
         <td class="border px-4 py-2">
-            <select data-question_id="{{ $QuestionData->id }}">
-                <option value="0" {{ ($pivot->priority ?? 0) == 0 ? 'selected' : '' }}>戦らない⋯</option>
-                <option value="1" {{ ($pivot->priority ?? 0) == 1 ? 'selected' : '' }}>ふつう</option>
-                <option value="2" {{ ($pivot->priority ?? 0) == 2 ? 'selected' : '' }}>戦る</option>
-                <option value="3" {{ ($pivot->priority ?? 0) == 3 ? 'selected' : '' }}>もっと戦る！</option>
+            <select class="priority-select" data-question_id="{{ $QuestionData->id }}">
+                <option value="0" {{ ($pivot->priority ?? 1) == 0 ? 'selected' : '' }}>低い</option>
+                <option value="1" {{ ($pivot->priority ?? 1) == 1 ? 'selected' : '' }}>並</option>
+                <option value="2" {{ ($pivot->priority ?? 1) == 2 ? 'selected' : '' }}>高い</option>
+                <option value="3" {{ ($pivot->priority ?? 1) == 3 ? 'selected' : '' }}>最高！</option>
             </select>
         </td>
     </tr>
 @endforeach
 </tbody>
-            </table>
+            </table>       
         </div>
+    
+    
         <!-- ページネーション -->
         <div class="mt-4">
             {{ $QuestionDatas->appends(Request::all())->links('pagination::tailwind') }}
         </div>
         
-</div>
+
         
     </div>
-</div>
-
-
-
-
-</x-app-layout>
+</div></x-app-layout>

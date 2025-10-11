@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const prioritySelect = document.getElementById("priority");
+    const prioritySelects = document.querySelectorAll(".priority-select");
 
-    if (prioritySelect) {
-        prioritySelect.addEventListener("change", function () {
+    prioritySelects.forEach(prioritySelect => {
+        prioritySelect.addEventListener("change", function(){
             let selectedValue = this.value;
             let questionId = this.dataset.question_id;
 
@@ -21,10 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 console.log("更新成功:", data);
+                // window.location.reload();
             })
             .catch(error => {
                 console.error("更新失敗:", error);
             });
         });
-    }
+    });
 });

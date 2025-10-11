@@ -29,14 +29,17 @@ class QuestionController extends Controller
     public function index(): View
 {
     $user = auth()->user();
+
+    // 1. 最新の回答と質問IDを取得
     $question_answer = Question::where('user_id', $user->id)->latest()->first(); 
+
     if ($user && $question_answer && $question_answer->stored_question_id !== null) {
-    $pivot = $user->triedStoredQuestions()
+        $pivot = $user->triedStoredQuestions()
         ->where('stored_question_id', $question_answer->stored_question_id)
         ->first()?->pivot;
-} else {
-    $pivot = null;
-}
+    } else {
+        $pivot = null;
+    }
 
     $storedQuestions = StoredQuestion::orderBy('created_at', 'asc')->get();
     $random_q = $this->weightService->getRandomWeightedQuestion();
@@ -45,10 +48,6 @@ class QuestionController extends Controller
     return view('questions.index', compact('question_answer', 'storedQuestions', 'random_q', 'user','pivot' ));
 
 
-// dd($question_answer = Question::where('user_id', $user->id)->latest()->first())
-    //  $questions = Question::latest()->get();
-    //     $storedQuestions = StoredQuestion::latest()->get();
-    //     return view('questions.index', compact('questions','storedQuestions'));
 }
 
     /**
@@ -68,8 +67,9 @@ class QuestionController extends Controller
     $request->validate([
         'tried_stored_question_id' => 'required|exists:stored_questions,id',
         'stored_question_id' => 'required|exists:stored_questions,id',
-        'user_answer' => 'required|string|max:255',
+        'user_answer' => 'required|string|max:255', 
     ]);
+    
     $storedQuestion = StoredQuestion::find($request->stored_question_id);
 
     // 新しい回答データを作成
@@ -150,16 +150,29 @@ if ($pivot) {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Question $question): RedirectResponse
-{
-        $question = Question::with('users')->find($question->id); // Eager Loading
+        public function destroy(Question $question): RedirectResponse
+    {
+        // 💡 修正: リレーションを 'users' から 'user' に変更
+        // ただし、Gate::authorize('delete', $question); は $question モデルを渡すので、
+        // Eager Loadingは必須ではありません。今回は $question を直接使います。
+        
+        // 削除前のポリシーチェックで、Questionモデル自体に紐づくuserをロードさせる
+        // 確実にロードさせるなら、以下のように書くか、
+        // $question->load('user'); 
+        
+        // もしくは、リレーションの呼び出しを修正します。
+        // $question = Question::with('user')->find($question->id); // id指定は不要
+
+        // Route Model Binding (Question $question) を利用し、リレーションを単数形 'user' でロード
+
+        $question->load('user');
 
         Gate::authorize('delete', $question); // ポリシーチェック
-
+        
         $question->delete(); // 削除処理
 
         return redirect(route('questions.index'));
-}
+    }
 
     public function user_posts(): View
     {
@@ -167,12 +180,9 @@ if ($pivot) {
         $question_answers = Question::where('user_id', $user->id)->latest()->paginate(10); // ログインユーザーの投稿のみ取得   
         $pivots=$user->triedStoredQuestions()->get();
         
-        $storedQuestions = StoredQuestion::orderBy('created_at', 'asc')->get();       
+        $storedQuestions = StoredQuestion::orderBy('created_at', 'asc')->get();
         
-
-        
-// $question_answer = Question::where('user_id', $user->id)->latest()->first(); // ログインユーザーの最新投稿を取得
-
+        // $question_answer = Question::where('user_id', $user->id)->latest()->first(); // ログインユーザーの最新投稿を取得
         return view('questions.user_posts', compact('question_answers', 'storedQuestions','user','pivots'));
     }
 }
