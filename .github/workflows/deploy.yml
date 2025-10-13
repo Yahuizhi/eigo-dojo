@@ -1,0 +1,43 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # mainブランチへのPushをトリガーとする
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}  
+        username: ubuntu 
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html/laravel-app
+
+          # 1. コードの取得
+          git pull origin main
+
+          # 2. ストレージとキャッシュの権限を www-data に設定
+          sudo chown -R www-data:www-data storage bootstrap/cache
+
+          # 3. 依存関係のインストール/更新 (www-dataで実行)
+          # 注意: composerがインストールされていること、PATHが通っていることが前提
+          sudo -u www-data /usr/bin/composer install --no-dev --prefer-dist --optimize-autoloader
+
+          # 4. データベースマイグレーション
+          sudo -u www-data php artisan migrate --force
+
+          # 5. キャッシュクリアと最適化
+          sudo -u www-data php artisan config:cache
+          sudo -u www-data php artisan route:cache
+          sudo -u www-data php artisan view:cache
+          
+          # 6. Webサービス再起動 (PHP-FPMのバージョンを確認してください)
+          sudo systemctl restart php8.3-fpm
