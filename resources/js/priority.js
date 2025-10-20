@@ -18,10 +18,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     question_id: questionId,
                     priority_num: selectedValue }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                
+                throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log("更新成功:", data);
-                // window.location.reload();
+                
             })
             .catch(error => {
                 console.error("更新失敗:", error);

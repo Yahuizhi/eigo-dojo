@@ -9,20 +9,27 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PreventTestUserWriteAccess
 {
-    /**
-     * テストアカウントユーザーの書き込み操作を拒否する
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+    
     public function handle(Request $request, Closure $next): Response
     {
-        // ユーザーがログインしており、かつメールアドレスがテストアカウントであるかチェック
-        // ※メールアドレスの比較は本番環境ではユーザーIDなどで厳密に行うのが理想的ですが、
-        //   開発・テスト環境の制御としてはこの方法が最も簡単です。
+        
         if (Auth::check() && Auth::user()->email === 'test@example.com') {
             
-            // ログアウト、データの変更、削除など、書き込み操作を拒否し、前のページに戻す
-            return redirect()->back()->with('error', 'この操作はテストアカウントでは許可されていません。');
+            
+            if ($request->isMethod('POST') || $request->isMethod('PATCH') || $request->isMethod('DELETE')) {
+                
+                $errorMessage = 'この操作はテストアカウントでは許可されていません。';
+
+                
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    
+                    return response()->json(['message' => $errorMessage], 403);
+                }
+                
+                
+                return redirect()->back()->with('error', $errorMessage);
+            }
         }
 
         return $next($request);

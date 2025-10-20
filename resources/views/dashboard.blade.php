@@ -12,17 +12,18 @@
                     {{Auth::user()->name}}
                     {{ __(" さん、こんにちわ！") }}
                 </div>
-                <div class="p-6 text-gray-900 dark:text-gray-100 text-2xl">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
                     <x-nav-link class="
                     font-bold
                     text-5xl
+                    sm:text-5xl
                     md:text-6xl
                     leading-tight"
                     :href="route('questions.index')" :active="request()->routeIs('questions.index')">
                         {{ __('けいこ') }}
                     </x-nav-link>
-
-                    {{'しましょうか！'}}
+                    <span class="text-2xl">
+                    {{'しましょうか！'}}</span>
                 </div>
             </div>
         </div>

@@ -10,9 +10,6 @@ use App\Models\StoredQuestion;
 
 class StoredQuestionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $questions = [['自宅の最寄り駅周辺の状況に関して説明してください。', 'My neighborhood is a mix of quiet residential streets and bustling commercial areas. There are plenty of parks and green spaces, which I appreciate. The local shops and restaurants offer a variety of cuisines and services, making it convenient to find what I need. The public transportation system is reliable, making it easy to get around the city. Overall, it\'s a pleasant and convenient place to live.'],

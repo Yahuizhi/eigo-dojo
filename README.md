@@ -1,70 +1,69 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+■ポートフォリオについて
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+・プロジェクト名  
+英語作文道場（英語作文の問答をするWEBアプリ）
 
-## About Laravel
+・使用技術  
+Laravel (PHP, MySQL), JavaScript、AWS
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+・概要  
+TSSTという電話での英語口答テストを参考にしてつくったアプリで、  
+日本語の質問に対して回答を送ると、英語の例文、自分の作った文章、各質問の回答回数などが返ってくるアプリです。  
+回答履歴の確認や、質問表示頻度(優先度)の調整なども可能です。生成AIもかなり活用しております。  
+無料枠の範囲内ですが、AWSにデプロイしておりますので、よろしければ是非ご覧くださいませ。ログインする際は、下記のテスト用のIDとパスワードをご利用いただけましたら幸いです。  
+※PHPunitなどの一部のファイルは、EC2内における容量削減のため削除しておりますが、ローカル環境でのテストは行っております。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+【URL】  
+[英語作文道場](http://52.64.125.160/)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+【テスト用ID】  
+test@example.com
 
-## Learning Laravel
+【テスト用パスワード】  
+password
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+・主な実装機能と技術的特徴  
+ログインユーザーごとに回答履歴を表示。質問ごとの回答回数もカウント  
+重みづけによって質問の出現頻度を変更できるように  
+質問の検索機能とCRUD機能  
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+・主なページの機能  
+①ウェルカムページ  
+	ログインページや登録ページに移動できます。ログイン後はトップページに移動します。  
+②回答フォームページ  
+	ランダムに出力される質問への回答を行うページです。  
+	回答すると、下部に最新の回答データやそれに付随する質問データ、回答例、回答回数、質問表示頻度が表示されます。質問表示頻度を変更することで質問の出現割合を調整できます。
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+![回答フォームページ](images/回答フォームページ.JPG) 
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+③回答一覧ページ  
+	ログインユーザーの回答履歴が確認できるページです。  
+④検索ページ  
+	質問をキーワード検索できるページです。質問ごとに本文、初めて回答した日時、最新の回答日時、回答回数、質問出現頻度をテーブルで整理しています。  
+	質問本文以外の各項目の最上部をクリックするとソートできる仕様になっています。
+ 
+![検索ページ](images/検索ページ.JPG)
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+・反省点  
+①中間テーブルを分離すべきだった  
+	コードのシンプル化、保守性の観点から、
+	回答回数、質問表示頻度をそれぞれ分けて運用すべきでした。  
+②データの取得方法  
+	現状は質問データのソートなどをPHPで行っていますが、次回以降はデータベース側で完結させられる仕組みをしっかりと整えて、大量データへの対応力を高めたいです。  
+③モデル名や役割が分かりにくかった  
+	コードを足したり削ったりと試行錯誤をしながら取り組んだ結果、モデル名などが似通ったりと非常に分かりにくい構造となってしまいました。コードも重複した部分があります。  
+	コントローラーに記載したコードをサービス化するなど、名称や役割の明確化やテストしやすい構造の導入をしっかり行いたいと思います。  
+④もっと色々と作りたかった  
+	ゲスト回答ページや管理ページもつくりたかったのですが、時間がなく今回は断念しました。また回答一覧も検索できるようにしたり、検索ページももう少し充実させたかったなと思っております。  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# eigo-dojo
->>>>>>> 67358720bea3bd0ed44bc8453e1841e1ca7a88ee
+・課題と今後  
+本プロジェクトは、しっかりと中間テーブルを生かせた点が良かったと思っておりますが、  
+「こうしたいな」「これは直したいな」といった要素が残ったままでの公開となり、正直にいって悔しい気持ちの残るプロジェクトになりました。  
+今後は今回の経験で得た反省点などを生かして、質が高くてより良いウェブサイトを素早く構築できるようになりたいと思っております。  
+またデバッグの重要性を痛感した機会にもなり、PHPUnitなどを柔軟に使いこなせるように努めます。  
+個人レベルでは、Githubや書籍で知識を蓄積しながら、ブログサイト等の構築や運用などを通して研鑽を積む方針です。  

@@ -2,12 +2,12 @@
     
 
 <div class="flex flex-col md:flex-row gap-6 px-2 md:px-0">
-    <!-- サイドバー -->
+   
     <div class="w-full md:w-1/4">
-        <!-- 検索フォーム -->
+        
     <form class="bg-white shadow-md rounded-lg p-4" action="{{ route('search') }}" method="GET">
             <h2 class="text-lg font-semibold mb-4">質問の検索</h2>
-    <!-- キーワード検索 -->
+   
     <div class="mb-4">
         <label for="keyword" class="block text-sm font-medium">キーワード</label>
         <input type="text" name="keyword" id="keyword" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200" placeholder="質問名" value="{{ Request::get('keyword') }}">
@@ -18,13 +18,13 @@
 
         
     </div>
-    <!-- メインコンテンツ -->
+  
     <div class="w-full md:w-3/4">
-        <!-- テーブルの横スクロール対応 -->
+       
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-            <!-- 商品リストテーブル -->
+            
             <table class="table-fixed md:table-auto w-full border-collapse border border-gray-300">
-                <!-- テーブルヘッダー -->
+              
                 <thead class="bg-gray-200">
                     <tr>
                         <th class="px-4 py-2">
@@ -37,9 +37,9 @@
                     初顔合わせ
                     @if (request()->sort == 'created_at')
                         @if (request()->direction == 'asc')
-                            <span>&#8595;</span> <!-- 下矢印 -->
+                            <span>&#8595;</span> 
                         @else
-                            <span>&#8593;</span> <!-- 上矢印 -->
+                            <span>&#8593;</span> 
                         @endif
                     @endif
                 </a>
@@ -48,9 +48,9 @@
                     最新の稽古日
                     @if (request()->sort == 'updated_at')
                         @if (request()->direction == 'asc')
-                            <span>&#8595;</span> <!-- 下矢印 -->
+                            <span>&#8595;</span> 
                         @else
-                            <span>&#8593;</span> <!-- 上矢印 -->
+                            <span>&#8593;</span> 
                         @endif
                     @endif
                 </a>
@@ -59,9 +59,9 @@
                     けいこ回数
                     @if (request()->sort == 'answer_count')
                         @if (request()->direction == 'asc')
-                            <span>&#8595;</span> <!-- 下矢印 -->
+                            <span>&#8595;</span> 
                         @else
-                            <span>&#8593;</span> <!-- 上矢印 -->
+                            <span>&#8593;</span> 
                         @endif
                     @endif
                 </a>
@@ -71,16 +71,16 @@
                     質問出現頻度
                     @if (request()->sort == 'priority')
                         @if (request()->direction == 'asc')
-                            <span>&#8595;</span> <!-- 下矢印 -->
+                            <span>&#8595;</span> 
                         @else
-                            <span>&#8593;</span> <!-- 上矢印 -->
+                            <span>&#8593;</span>            
                         @endif
                     @endif
                 </a>
             </th>                 
                     </tr>
                 </thead>
-                <!-- テーブルボディ -->
+                
                 <tbody>                    
                     @foreach ($QuestionDatas as $QuestionData)
     @php
@@ -107,10 +107,9 @@
 @endforeach
 </tbody>
             </table>       
-        </div>
+        </div>    
     
-    
-        <!-- ページネーション -->
+        
         <div class="mt-4">
             {{ $QuestionDatas->appends(Request::all())->links('pagination::tailwind') }}
         </div>

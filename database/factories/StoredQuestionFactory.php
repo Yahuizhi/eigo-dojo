@@ -1,11 +1,9 @@
 <?php
 
-// database/factories/StoredQuestionFactory.php
-
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\StoredQuestion; // モデルをインポート
+use App\Models\StoredQuestion; 
 
 class StoredQuestionFactory extends Factory
 {
@@ -13,10 +11,9 @@ class StoredQuestionFactory extends Factory
 
     public function definition()
     {
-        return [
-            // 'Q'と'A'というカラムに、それぞれダミーテキストを生成する
-            'Q' => $this->faker->sentence(), // 質問文
-            'A' => $this->faker->text(),     // 回答文
+        return [            
+            'Q' => $this->faker->sentence(), 
+            'A' => $this->faker->text(),     
         ];
     }
 }

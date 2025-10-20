@@ -1,1 +1,5 @@
+# Local files
+.env.local
+# IDE files
+.idea/
 *.sqlite*

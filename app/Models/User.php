@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    
     use HasFactory, Notifiable;
 
     /**
@@ -58,10 +58,10 @@ class User extends Authenticatable
     public function triedStoredQuestions()
     {
         return $this->belongsToMany(StoredQuestion::class, 'user_tried_stored_questions',
-         'user_id',            // 👈 User モデルの外部キー（user_id）
-        'stored_question_id'  // 👈 StoredQuestion モデルの外部キー（stored_question_id）
+         'user_id',            
+        'stored_question_id'  
     )
-            ->withPivot('answer_count', 'priority','question_id')
+            ->withPivot('answer_count', 'priority',)
             ->withTimestamps();
     }
     }

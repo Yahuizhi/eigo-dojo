@@ -18,9 +18,5 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Gate::policy(Question::class, QuestionPolicy::class);
 
-    //     // Gate::define('delete', function ($user, $question) {
-    //     // // 認可のロジック
-    //     // return $user->id === $question->user_id;
-    // });
     }
 }

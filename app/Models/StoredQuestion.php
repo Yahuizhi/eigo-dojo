@@ -2,42 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StoredQuestion extends Model
 {
     use HasFactory;
     
-    protected $fillable=['Q','A'];
-    // public function user(){
-    //     return $this->belongsTo(User::class);
-    // }       
+    
+    protected $table = 'stored_questions';
 
-   
-    public function users()
+    
+    public function users():BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_tried_stored_questions')
-                    ->withPivot('answer_count', 'priority')
-                    ->withTimestamps();
-    }
-
-    // App/Models/StoredQuestion.php
-
-    public function triedUsers()
-    {
-        return $this->belongsToMany(User::class, 'user_tried_stored_questions')
-            ->withPivot('answer_count', 'priority')
-            ->withTimestamps();
-    }
-
-    public function userPivot()
-    {
-        // belongsToMany を使用し、wherePivot でユーザーを絞り込む
+        
         return $this->belongsToMany(User::class, 'user_tried_stored_questions', 'stored_question_id', 'user_id')
-            ->as('pivotData') // pivot としてアクセスできるように別名を付ける
-            ->withPivot('priority', 'answer_count', 'created_at', 'updated_at') // 必要なカラムを取得
-            ->wherePivot('user_id', auth()->id());
+                    ->withPivot(['answer_count', 'priority']) 
+                    ->withTimestamps(); 
+    }
+
+    
+    public function updatePriority(int $userId, int $priorityNum): bool
+    {
+        
+        $pivotData = $this->users()->where('user_id', $userId)->first();
+
+        if ($pivotData) {
+            
+            $this->users()->updateExistingPivot($userId, [
+                'priority' => $priorityNum,
+                'updated_at' => now(),
+            ]);
+        } else {
+            
+            $this->users()->attach($userId, [
+                'priority' => $priorityNum,
+                'answer_count' => 0, 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return true;
     }
 }

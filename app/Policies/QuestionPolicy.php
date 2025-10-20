@@ -37,7 +37,7 @@ class QuestionPolicy
      */
     public function update(User $user, Question $question): bool
     {
-        // return false;
+        
         return $user->id === $question->user_id;
     }
 
@@ -45,9 +45,7 @@ class QuestionPolicy
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Question $question): bool
-    {
-        // return false;
-        // return $question->users()->where('user_id', $user->id)->exists();
+    {   
         return $user->id === $question->user_id;
     }
 

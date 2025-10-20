@@ -4,7 +4,7 @@
         <div >
             <div>
                 <div class="flex justify-between items-center font-bold">
-                    <!-- ランダムな質問を表示 -->
+                    
                     <p>{{ $random_q->Q }}</p> 
                 </div>
             </div>
@@ -51,9 +51,7 @@
         </form>
         @endif
         
-
-        
-        <!-- 回答があれば表示 -->
+              
         @if($question_answer)
 
         <x-question-answer 
