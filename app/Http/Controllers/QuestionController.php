@@ -41,7 +41,7 @@ class QuestionController extends Controller
         $pivot = null;
     }
 
-    $storedQuestions = StoredQuestion::orderBy('created_at', 'asc')->get();
+    $storedQuestions = StoredQuestion::all()->keyBy('id');
     $random_q = $this->weightService->getRandomWeightedQuestion();
     
 
@@ -151,19 +151,7 @@ if ($pivot) {
      * Remove the specified resource from storage.
      */
         public function destroy(Question $question): RedirectResponse
-    {
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
+    {       
 
         $question->load('user');
 
@@ -180,7 +168,7 @@ if ($pivot) {
         $question_answers = Question::where('user_id', $user->id)->latest()->paginate(10); 
         $pivots=$user->triedStoredQuestions()->get();
         
-        $storedQuestions = StoredQuestion::orderBy('created_at', 'asc')->get();
+        $storedQuestions = StoredQuestion::all()->keyBy('id');
         
         
         return view('questions.user_posts', compact('question_answers', 'storedQuestions','user','pivots'));

@@ -53,7 +53,7 @@
   <p class="text-gray-900 font-semibold">
     【質問】</p>
   <p class="mt-1 text-lg text-gray-900">
-    {{ $storedQuestions[$question_answer->tried_stored_question_id-1]->Q ?? '質問内容は利用できません' }}</p>
+    {{ $storedQuestions[$question_answer->tried_stored_question_id]->Q ?? '質問内容は利用できません' }}</p>
 	
 	<p class="mt-3 text-gray-900 font-semibold">
     【{{Auth::user()->name}}さんの回答】</p>
@@ -63,7 +63,7 @@
 	<p class="mt-3 text-gray-900 font-semibold">
 		【回答例】</p>
   <p class="mt-1 text-lg text-gray-900">
-    {{ $storedQuestions[$question_answer->tried_stored_question_id-1]->A ?? '回答内容は利用できません' }}</p>
+    {{ $storedQuestions[$question_answer->tried_stored_question_id]->A ?? '回答内容は利用できません' }}</p>
 
   <p class="mt-3 text-gray-900 font-semibold">
     ★回答回数<a class="mx-4 text-lg text-gray-900">
