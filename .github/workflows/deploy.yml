@@ -20,3 +20,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/html/laravel-app
+          git pull origin main
+          php artisan cache:
+          php artisan config:clear
+          php artisan view:clear
+          php artisan optimize
