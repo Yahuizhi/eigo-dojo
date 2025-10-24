@@ -83,27 +83,35 @@ class QuestionController extends Controller
 
     
     $user = auth()->user();
+    $now = now();
+    $stored_question_id = $question_answer->stored_question_id;
 
-    
-    $pivot = $user->triedStoredQuestions()->where('stored_question_id', $question_answer->stored_question_id)->first();
+    $current_answer_count = DB::table('user_tried_stored_questions')
+    ->where('user_id', $user->id)
+    ->where('stored_question_id', $stored_question_id)
+    ->value('answer_count');    
     
 
-if ($pivot) {
-    
-    
-    $newAnswerCount = $pivot->pivot->answer_count ?? 0;
-    
-    
-    $user->triedStoredQuestions()->updateExistingPivot($question_answer->stored_question_id, [
-        'answer_count' => $newAnswerCount + 1,  
-        'updated_at' => now(),
+if ($current_answer_count > 0) {    
+       
+    DB::table('user_tried_stored_questions')
+        ->where('user_id', $user->id)
+        ->where('stored_question_id', $stored_question_id)
+        ->increment('answer_count',1,[
+            'updated_at' => $now,
     ]);
 } else {
     
-    $user->triedStoredQuestions()->attach($question_answer->stored_question_id, [
-        'answer_count' => 1,  
-        'priority' => 1,
-        
+    DB::table('user_tried_stored_questions')->updateOrInsert(
+    [
+        'user_id' => $user->id,
+        'stored_question_id' => $stored_question_id,
+    ],
+    [
+        'answer_count' => 1,
+        'created_at' => $now,
+        'updated_at' => $now,       
+      
     ]);
 }
 

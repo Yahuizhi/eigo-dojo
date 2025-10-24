@@ -20,7 +20,11 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/html/laravel-app
-          git pull origin main
+          git pull origin main --rebase
+
+          sudo chown -R ubuntu:www-data storage bootstrap/cache
+          sudo chmod -R 775 storage bootstrap/cache
+
           php artisan cache:
           php artisan config:clear
           php artisan view:clear
